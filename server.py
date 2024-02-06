@@ -71,7 +71,7 @@ try:
                         row = cursor.fetchone()
                         if row is None:
                             send_message = "Invalid login"
-                        elif bcrypt.checkpw(data['password'].encode(), row[1]):
+                        elif bcrypt.checkpw(data['password'].encode(), bytes(row[1])):
                             if data['role'] == 2 and row[2] == 'faculty':
                                 teachers.add(row[0])
                                 send_message = "Logged in successfully"

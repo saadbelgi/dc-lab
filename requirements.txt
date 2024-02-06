@@ -1,0 +1,7 @@
+bcrypt==4.1.2
+grpcio==1.60.1
+grpcio-tools==1.60.1
+mysql-connector-python==8.3.0
+protobuf==4.25.2
+Pyro5==5.15
+serpent==1.41
