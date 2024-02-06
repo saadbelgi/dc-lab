@@ -31,9 +31,12 @@ class CourseDAO(object):
 
     
     def insert(self, name='name', code='code', faculty=1):
-        self.cursor.execute(f'insert into course (course_name, course_code, course_faculty) values ("{name}", "{code}", {faculty})')
-        self.connection.commit()
-        return f'Course inserted with ID {self.cursor.lastrowid}'
+        try:
+            self.cursor.execute(f'insert into course (course_name, course_code, faculty) values ("{name}", "{code}", {faculty})')
+            self.connection.commit()
+            return f'Course inserted with ID {self.cursor.lastrowid}'
+        except mysql.connector.errors.ProgrammingError as e:
+            return e.msg
     
     def show_all(self, faculty=1):
         self.cursor.execute(f'select course_id, course_name, course_code from course where faculty={faculty}')

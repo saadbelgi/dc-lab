@@ -16,7 +16,7 @@ database = "dc_exp2"
 
 # session
 admins = set()
-teachers = set()
+loggedin_teachers = set()
 
 course_dao = None
 
@@ -62,18 +62,20 @@ try:
                 data = json.loads(rcvd_data.decode())
                 print(f"Received data: {data}")
 
-                if data['id'] not in admins and data['id'] not in teachers:
+                if data['id'] not in admins and data['id'] not in loggedin_teachers:
                     if 'role' not in data:
                         send_message = "Unauthorized access"
                     elif data['role'] != 1:
                         cursor.execute(
                             "select id, password, role from user where id=%s", (data['id'], ))
                         row = cursor.fetchone()
+                        print('row:')
+                        print(row)
                         if row is None:
                             send_message = "Invalid login"
                         elif bcrypt.checkpw(data['password'].encode(), bytes(row[1])):
                             if data['role'] == 2 and row[2] == 'faculty':
-                                teachers.add(row[0])
+                                loggedin_teachers.add(row[0])
                                 send_message = "Logged in successfully"
                             elif data['role'] == 3 and row[2] == 'administrator':
                                 admins.add(row[0])
@@ -105,7 +107,7 @@ try:
                 elif data['task'] == 4:
                     if course_dao is None:
                         course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")   
-                    send_message = course_dao.save(name=data['course_name'], code=data['course_code'], faculty=data['faculty']) 
+                    send_message = course_dao.insert(name=data['course_name'], code=data['course_code'], faculty=data['id']) 
                 elif data['task'] == 5:
                     if course_dao is None:
                         course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")   

@@ -50,8 +50,8 @@ while True:
     elif role == 2:
         inp = int(input('What do you want to do?:\n\n1: Add a new course\n2: View all your courses\n\n'))
         if inp == 1:
-            course_name = input('Enter full name of the teacher: ')
-            course_code = input('Enter phone number: ')
+            course_name = input('Enter name of the course: ')
+            course_code = input('Enter course code: ')
             message = json.dumps({'id': id, 'task': 4, 'course_name': course_name, 'course_code': course_code})
             client_socket.sendall(message.encode())
             data = client_socket.recv(1024).decode()
