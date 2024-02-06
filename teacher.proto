@@ -1,0 +1,36 @@
+// The Teacher service definition.
+syntax = "proto2";
+
+service Teacher {
+  // Registers a teacher
+  rpc Register (TeacherData) returns (RegisterResponse) {}
+  // Sends details of all teachers
+  rpc ShowAll (Temp) returns (Teachers) {}
+}
+
+// Teacher Data
+message TeacherData {
+  required string name = 1;
+  required string phone_no = 2;
+  required string password = 3;
+}
+
+// Response after registration
+message RegisterResponse {
+  required string message = 1;
+}
+
+// Data of all teachers
+message Teachers {
+  message TeacherData {
+    required string name = 1;
+    required string phone_no = 2;
+    required int32 id = 3;
+  };
+  repeated TeacherData data = 1;
+}
+
+// empty message
+message Temp {
+  optional string field = 1;
+}
