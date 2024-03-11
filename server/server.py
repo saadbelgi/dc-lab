@@ -9,9 +9,9 @@ import Pyro5.api
 
 # MySQL database configuration
 host = "localhost"
-user = "springstudent"
-password = "springstudent"
-database = "dc_exp2"
+user = "admin"
+password = "admin"
+database = "dc"
 
 
 # session

@@ -10,9 +10,9 @@ import teacher_pb2_grpc
 
 # MySQL database configuration
 host = "localhost"
-user = "springstudent"
-password = "springstudent"
-database = "dc_exp2"
+user = "admin"
+password = "admin"
+database = "dc"
 
 class TeacherServicer(teacher_pb2_grpc.TeacherServicer):
     """Provides methods that implement functionality of Teacher server."""
