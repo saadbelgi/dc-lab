@@ -7,9 +7,9 @@ import mysql.connector
 
 # MySQL database configuration
 host = "localhost"
-user = "springstudent"
-password = "springstudent"
-database = "dc_exp2"
+user = "admin"
+password = "admin"
+database = "dc"
 
 
 @Pyro5.api.expose
