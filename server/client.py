@@ -48,7 +48,7 @@ while True:
             data = client_socket.recv(1024).decode()
             print(f"Received data from server: {data}\n\n")
     elif role == 2:
-        inp = int(input('What do you want to do?:\n\n1: Add a new course\n2: View all your courses\n\n'))
+        inp = int(input('What do you want to do?:\n\n1: Add a new course\n2: View all your courses\n3: Logout\n\n'))
         if inp == 1:
             course_name = input('Enter name of the course: ')
             course_code = input('Enter course code: ')
@@ -63,6 +63,12 @@ while True:
             print("All courses:")
             print(data)
             print('\n')
+        elif inp == 3:
+            loggedin = False
+            message = json.dumps({'id': id, 'task': 3})
+            client_socket.sendall(message.encode())
+            data = client_socket.recv(1024).decode()
+            print(f"Received data from server: {data}\n\n")
         # client_socket.sendall(message.encode())
         # data = client_socket.recv(1024).decode()
         

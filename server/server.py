@@ -87,12 +87,15 @@ try:
                 elif data['task'] == 3:
                     if data['id'] in admins:
                         admins.remove(data['id'])
+                    elif data['id'] in loggedin_teachers:
+                        loggedin_teachers.remove(data['id'])
                     send_message = "Logged out successfully"
                 elif data['task'] == 1:
                     # RPC to another server
                     with grpc.insecure_channel("localhost:50051") as channel:
                         stub = teacher_pb2_grpc.TeacherStub(channel)
-                        request = teacher_pb2.TeacherData(name=data['name'], phone_no=data['phone_no'], password=data['password'])
+                        request = teacher_pb2.TeacherData(
+                            name=data['name'], phone_no=data['phone_no'], password=data['password'])
                         send_message = stub.Register(request).message
                 elif data['task'] == 2:
                     # RPC to another server
@@ -102,16 +105,19 @@ try:
                         teachers = stub.ShowAll(request).data
                         result = []
                         for i in teachers:
-                            result.append({'id': i.id, 'name': i.name, 'phone_no': i.phone_no})
+                            result.append(
+                                {'id': i.id, 'name': i.name, 'phone_no': i.phone_no})
                         send_message = json.dumps(result)
                 elif data['task'] == 4:
                     if course_dao is None:
-                        course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")   
-                    send_message = course_dao.insert(name=data['course_name'], code=data['course_code'], faculty=data['id']) 
+                        course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")
+                    send_message = course_dao.insert(
+                        name=data['course_name'], code=data['course_code'], faculty=data['id'])
                 elif data['task'] == 5:
                     if course_dao is None:
-                        course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")   
-                    send_message = json.dumps(course_dao.show_all(faculty=data['id']))
+                        course_dao = Pyro5.api.Proxy("PYRONAME:rmi.CourseDAO")
+                    send_message = json.dumps(
+                        course_dao.show_all(faculty=data['id']))
 
                 # Echo back the received data
                 client_socket.sendall(send_message.encode())
