@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Auth: React.FC = () => {
   const [role, setRole] = useState<string>("admin");
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleRoleChange = (selectedRole: string) => {
     setRole(selectedRole);
@@ -15,7 +17,17 @@ const Auth: React.FC = () => {
       setError("Please fill out all fields.");
     } else {
       setError(null);
-      console.log("Submit");
+      if (id === "1111" && password === "123456aA") {
+        localStorage.setItem("role", role.toUpperCase());
+        localStorage.setItem("persist", "true");
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "teacher") {
+          navigate("/teacher/dashboard");
+        } else {
+          navigate("/student/dashboard");
+        }
+      }
     }
   };
 
