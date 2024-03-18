@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Card from "../components/Card";
+import Card from "./Card";
 import { IoIosAdd } from "react-icons/io";
 
 import {
@@ -13,16 +13,14 @@ import {
 } from "@tanstack/react-table";
 
 import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { ImEnlarge } from "react-icons/im";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { FaEdit } from "react-icons/fa";
 import { useAppDispatch } from "../app/store";
 
-import UserModal from "../components/UserModal";
+import CourseModal from "./CourseModal";
 import { FaTrash } from "react-icons/fa6";
-import { deleteUser } from "../app/features/UserSlice";
-import UserUpdateModal from "../components/UserUpdateModal";
+import CourseUpdateModal from "./CourseUpdateModal";
+import { deleteCourse } from "../app/features/CoursesSlice";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -42,16 +40,15 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 type RowObj = {
-  id: string;
+  code: string;
   name: string;
-  role: string;
-  password: string;
+  duration: string;
+  teacher: string;
   actions: string | undefined;
 };
 
-function UserTable(props: { tableData: any; title: string }) {
+function CourseTable(props: { tableData: any; title: string }) {
   const columnHelper = createColumnHelper<RowObj>();
-  const navigate: NavigateFunction = useNavigate();
 
   const { tableData } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -60,32 +57,37 @@ function UserTable(props: { tableData: any; title: string }) {
   const dispatch = useAppDispatch();
 
   const {
-    isOpen: isUserModalOpen,
-    onOpen: onUserModalOpen,
-    onClose: onUserModalClose,
+    isOpen: isCourseModalOpen,
+    onOpen: onCourseModalOpen,
+    onClose: onCourseModalClose,
   } = useDisclosure();
 
   const {
-    isOpen: isUserUpdateModalOpen,
-    onOpen: onUserUpdateModalOpen,
-    onClose: onUserUpdateModalClose,
+    isOpen: isCourseUpdateModalOpen,
+    onOpen: onCourseUpdateModalOpen,
+    onClose: onCourseUpdateModalClose,
   } = useDisclosure();
 
   const handleDelete = (rowObj: RowObj) => {
-    dispatch(deleteUser(rowObj.id));
-    setData(data.filter((item) => item.id !== rowObj.id));
+    dispatch(deleteCourse(rowObj.code));
+    setData(data.filter((item) => item.code !== rowObj.code));
   };
 
   const handleUpdate = (rowObj: RowObj) => {
     setSelectedRow(rowObj);
-    onUserUpdateModalOpen();
+    onCourseUpdateModalOpen();
   };
 
-  const updateData = (id: string, name: string, password: string) => {
+  const handleCreate = () => {
+    onCourseModalClose();
+    onCourseModalOpen();
+  };
+
+  const updateData = (code: string, name: string, duration: string) => {
     setData(
       data.map((item) => {
-        if (item.id === id) {
-          return { ...item, name, password };
+        if (item.code === code) {
+          return { ...item, name, duration };
         }
         return item;
       })
@@ -97,9 +99,9 @@ function UserTable(props: { tableData: any; title: string }) {
   }, [tableData]);
 
   const columns = [
-    columnHelper.accessor("id", {
-      id: "id",
-      header: () => <p className="text-sm font-bold text-gray-600">ID</p>,
+    columnHelper.accessor("code", {
+      id: "code",
+      header: () => <p className="text-sm font-bold text-gray-600">CODE</p>,
       cell: (info: any) => (
         <p className="text-sm font-bold text-navy-70">{info.getValue()}</p>
       ),
@@ -111,18 +113,18 @@ function UserTable(props: { tableData: any; title: string }) {
         <p className="text-sm font-bold text-navy-700 ">{info.getValue()}</p>
       ),
     }),
-    columnHelper.accessor("role", {
-      id: "role",
-      header: () => <p className="text-sm font-bold text-gray-600 ">ROLE</p>,
+    columnHelper.accessor("duration", {
+      id: "duration",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 ">DURATION</p>
+      ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 ">{info.getValue()}</p>
       ),
     }),
-    columnHelper.accessor("password", {
-      id: "password",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 ">PASSWORD</p>
-      ),
+    columnHelper.accessor("teacher", {
+      id: "teacher",
+      header: () => <p className="text-sm font-bold text-gray-600 ">TEACHER</p>,
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 ">{info.getValue()}</p>
       ),
@@ -176,7 +178,7 @@ function UserTable(props: { tableData: any; title: string }) {
         <header className="relative flex items-center justify-between pt-4">
           <div className="text-2xl font-bold text-blue-900">{props.title}</div>
           <button
-            onClick={() => onUserModalOpen()}
+            onClick={() => handleCreate()}
             className={`linear flex items-center justify-center rounded-lg bg-lightPrimary p-2 text-xl font-bold text-slate-600  transition duration-200
            hover:cursor-pointer hover:bg-gray-300 `}
           >
@@ -244,22 +246,21 @@ function UserTable(props: { tableData: any; title: string }) {
         </div>
       </Card>
       {selectedRow && (
-        <>
-          <UserModal
-            onUserModalClose={onUserModalClose}
-            isUserModalOpen={isUserModalOpen}
-            role={"Teacher"}
-          />
-          <UserUpdateModal
-            onUserUpdateModalClose={onUserUpdateModalClose}
-            isUserUpdateModalOpen={isUserUpdateModalOpen}
-            user={selectedRow}
-            updateData={updateData}
-          />
-        </>
+        <CourseUpdateModal
+          onCourseUpdateModalClose={onCourseUpdateModalClose}
+          isCourseUpdateModalOpen={isCourseUpdateModalOpen}
+          course={selectedRow}
+          updateData={updateData}
+        />
       )}
+      <CourseModal
+        onCourseModalClose={onCourseModalClose}
+        isCourseModalOpen={isCourseModalOpen}
+        setCourseData={setData}
+        courseData={data}
+      />
     </>
   );
 }
 
-export default UserTable;
+export default CourseTable;

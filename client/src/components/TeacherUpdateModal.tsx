@@ -9,7 +9,7 @@ import Card from "./Card";
 import { MdCheckCircle } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { useAppDispatch } from "../app/store";
-import { updateUser } from "../app/features/UserSlice";
+import { updateUser } from "../app/features/UsersSlice";
 import { useState } from "react";
 
 type User = {
@@ -20,19 +20,19 @@ type User = {
   actions: string | undefined;
 };
 
-interface userUpdateModalProps {
+interface TeacherUpdateModalProps {
   user: User;
-  isUserUpdateModalOpen: boolean;
-  onUserUpdateModalClose: () => void;
+  isTeacherUpdateModalOpen: boolean;
+  onTeacherUpdateModalClose: () => void;
   updateData: (id: string, name: string, password: string) => void;
 }
 
-const UserUpdateModal = ({
-  isUserUpdateModalOpen,
-  onUserUpdateModalClose,
+const TeacherUpdateModal = ({
+  isTeacherUpdateModalOpen,
+  onTeacherUpdateModalClose,
   user,
   updateData,
-}: userUpdateModalProps) => {
+}: TeacherUpdateModalProps) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState(user?.name);
   const [password, setPassword] = useState(user?.password);
@@ -41,15 +41,15 @@ const UserUpdateModal = ({
     updateData(user?.id, name, password);
     setTimeout(() => {
       dispatch(updateUser({ id: user?.id, name: name, password: password }));
-    }, 10000);
-    onUserUpdateModalClose();
+    }, 1000);
+    onTeacherUpdateModalClose();
   };
 
   return (
     <>
       <Modal
-        isOpen={isUserUpdateModalOpen}
-        onClose={onUserUpdateModalClose}
+        isOpen={isTeacherUpdateModalOpen}
+        onClose={onTeacherUpdateModalClose}
         size="md"
         isCentered
         scrollBehavior="inside"
@@ -104,7 +104,7 @@ const UserUpdateModal = ({
                   Update
                 </button>
                 <button
-                  onClick={onUserUpdateModalClose}
+                  onClick={onTeacherUpdateModalClose}
                   className="flex items-center justify-center w-1/2 h-12 rounded-lg bg-red-500 text-white font-bold transition duration-200 hover:bg-red-600"
                 >
                   <IoMdClose className="text-xl me-2" />
@@ -119,4 +119,4 @@ const UserUpdateModal = ({
   );
 };
 
-export default UserUpdateModal;
+export default TeacherUpdateModal;

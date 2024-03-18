@@ -7,11 +7,13 @@ import Student from "./screens/Student";
 const App = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/auth" replace />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/admin/dashboard" element={<Admin />} />
       <Route path="/teacher/dashboard" element={<Teacher />} />
       <Route path="/student/dashboard" element={<Student />} />
-      <Route
+
+      {/* <Route
         path="/"
         element={
           localStorage.getItem("persist") ? (
@@ -26,7 +28,7 @@ const App = () => {
             <Navigate to="/auth" replace />
           )
         }
-      />
+      /> */}
     </Routes>
   );
 };

@@ -6,47 +6,51 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/modal";
 import Card from "./Card";
-import { BiCategoryAlt } from "react-icons/bi";
-import { FaTrash } from "react-icons/fa";
 import { useAppDispatch } from "../app/store";
-import { createUser } from "../app/features/UserSlice";
 import { useState } from "react";
+import { Course, createCourse } from "../app/features/CoursesSlice";
 
-interface UserModalProps {
-  isUserModalOpen: boolean;
-  onUserModalClose: () => void;
-  role: string;
+interface CourseModalProps {
+  isCourseModalOpen: boolean;
+  onCourseModalClose: () => void;
+  setCourseData: (data: any) => void;
+  courseData: Course[];
 }
 
-const UserModal = ({
-  isUserModalOpen,
-  onUserModalClose,
-  role,
-}: UserModalProps) => {
+const CourseModal = ({
+  isCourseModalOpen,
+  onCourseModalClose,
+  setCourseData,
+  courseData,
+}: CourseModalProps) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const generateRandomID = () => {
-    return Math.floor(Math.random() * 9000) + 1000;
+  const [duration, setDuration] = useState("");
+  const teacher = localStorage.getItem("name") || "teacher";
+
+  const generateCode = () => {
+    const randomDigits = Math.floor(Math.random() * 900) + 100;
+    const code = "CO" + randomDigits;
+    return code;
   };
 
   const handleCreate = () => {
-    dispatch(
-      createUser({
-        id: generateRandomID().toString(),
-        name: name,
-        role: role,
-        password: password,
-      })
-    );
-    onUserModalClose();
+    const course: Course = {
+      code: generateCode().toString(),
+      name: name,
+      duration: duration,
+      teacher: teacher,
+    };
+    dispatch(createCourse(course));
+    setCourseData([...courseData, course]);
+    onCourseModalClose();
   };
 
   return (
     <>
       <Modal
-        isOpen={isUserModalOpen}
-        onClose={onUserModalClose}
+        isOpen={isCourseModalOpen}
+        onClose={onCourseModalClose}
         size="md"
         isCentered
         scrollBehavior="inside"
@@ -65,7 +69,7 @@ const UserModal = ({
               <h1
                 className={`text-2xl text-gray-800 font-bold text-center mb-6`}
               >
-                Create User
+                Create Course
               </h1>
               <div className={`my-2`}>
                 <div className="relative flex-col mb-4">
@@ -90,14 +94,14 @@ const UserModal = ({
                       htmlFor="category"
                       className={`text-gray-700 font-semibold ml-1`}
                     >
-                      Password:
+                      Duration:
                     </label>
                   </div>
                   <input
                     id="category"
-                    value={password}
+                    value={duration}
                     className="relative mt-2 flex h-12 w-full items-center justify-center rounded-lg border bg-gray-100 p-3 text-sm outline-none placeholder-gray-400 shadow-sm text-slate-800"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setDuration(e.target.value)}
                   />
                 </div>
               </div>
@@ -117,4 +121,4 @@ const UserModal = ({
   );
 };
 
-export default UserModal;
+export default CourseModal;
