@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { TeacherSlice } from "./features/TeacherSlice";
+import { UsersSlice } from "./features/UsersSlice";
+import { CoursesSlice } from "./features/CoursesSlice";
 
 export const store = configureStore({
   reducer: {
-    teacher: TeacherSlice.reducer,
+    users: UsersSlice.reducer,
+    courses: CoursesSlice.reducer,
   },
 });
 
