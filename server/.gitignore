@@ -1,4 +1,2 @@
-dc-venv
-.vscode
 __pycache__
-/venv
+dc-exp3-venv

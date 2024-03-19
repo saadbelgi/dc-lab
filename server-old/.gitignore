@@ -1,0 +1,4 @@
+dc-venv
+.vscode
+__pycache__
+/venv
